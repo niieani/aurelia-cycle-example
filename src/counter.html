@@ -1,7 +1,7 @@
 <template>
   <section>
-    <h2>${count & cycle}</h2>
-    <button click.delegate="increment() & cycle">+</button>
-    <button click.delegate="decrement() & cycle">-</button>
+    <h2>${cycleValue('count')}</h2>
+    <button click.delegate="cycleAction('increment')">+</button>
+    <button click.delegate="cycleAction('decrement')">-</button>
   </section>
 </template>
