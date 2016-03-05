@@ -1,13 +1,13 @@
 import {Observable} from 'rxjs/Rx'
 import {makeAureliaDriver, ViewSource} from './cycle/index' //'aurelia-cycle'
 
-export class Counter {
+export class CounterShared {
   // cycleDrivers = { CounterView: makeAureliaDriver(this) }
   
-  cycle({ CounterView }:{ CounterView: ViewSource }) {
+  cycle({ CounterSharedView }:{ CounterSharedView: ViewSource }) {
     const action$ = Observable.merge<number, number>(
-      CounterView.actions('increment').map(ev => 1),
-      CounterView.actions('decrement').map(ev => -1)
+      CounterSharedView.actions('increment').map(ev => 1),
+      CounterSharedView.actions('decrement').map(ev => -1)
     )
 
     const count$ = action$
@@ -15,8 +15,8 @@ export class Counter {
       .scan<number>((total, change) => total + change)
 
     const sinks = {
-      CounterView: count$.map((count) => ({ 
-        count: count
+      CounterSharedView: count$.map((count) => ({ 
+        count
       }))
     }
     

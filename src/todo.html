@@ -1,0 +1,61 @@
+<template>
+  <require from="todomvc-common/base.css"></require>
+  <require from="todomvc-app-css/index.css"></require>
+  <require from="./todo-item"></require>
+  
+  <section class="todoapp">
+    <header class="header">
+      <h1>todos</h1>
+      <form submit.delegate="cycleAction('addNewTodo')">
+        <input value.bind="cycleValue('newTodoTitle')" class="new-todo" placeholder="What needs to be done?" autofocus>
+      </form>
+    </header>
+    <!-- This section should be hidden by default and shown when there are todos -->
+    <section class="main">
+      <input class="toggle-all" type="checkbox">
+      <label for="toggle-all">Mark all as complete</label>
+      <ul class="todo-list">
+        <!--<li as-element="todo-item" repeat.for="todo of todos & cycle"
+            title.bind="todo.title" completed.bind="todo.completed">
+        </li>-->
+        <todo-item repeat.for="todo of cycleValue('todos') | filterTodo: cycleValue('currentFilter')"
+            title.bind="todo.title" completed.bind="todo.completed"
+            destroy.bind="cycleAction('destroyTodo', todo)">
+            <!--wtf.bind="wtf">-->
+            <!--destroyAction.bind="cycleAction('destroyTodo', todo)">-->
+        </todo-item>
+        <!--<li repeat.for="todo of todos & cycle">
+          ${todo.title}
+        </li>-->
+      </ul>
+    </section>
+    <!-- This footer should hidden by default and shown when there are todos -->
+    <footer class="footer">
+      <!-- This should be `0 items left` by default -->
+      <span class="todo-count"><strong>${cycleValue('todos').length}</strong> item left</span>
+      <!-- Remove this if you don't implement routing -->
+      <ul class="filters">
+        <li>
+          <a class="${cycleValue('currentFilter') == 'all' ? 'selected' : ''}" href="#/" click.delegate="cycleAction('filter', 'all')">All</a>
+        </li>
+        <li>
+          <a class="${cycleValue('currentFilter') == 'active' ? 'selected' : ''}" href="#/active" click.delegate="cycleAction('filter', 'active')">Active</a>
+        </li>
+        <li>
+          <a class="${cycleValue('currentFilter') == 'completed' ? 'selected' : ''}" href="#/completed" click.delegate="cycleAction('filter', 'completed')">Completed</a>
+        </li>
+      </ul>
+      <!-- Hidden if no completed items are left ↓ -->
+      <button class="clear-completed">Clear completed</button>
+    </footer>
+  </section>
+  <footer class="info">
+    <p>Double-click to edit a todo</p>
+    <!-- Remove the below line ↓ -->
+    <p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
+    <!-- Change this out with your name and url ↓ -->
+    <p>Created by <a href="http://todomvc.com">you</a></p>
+    <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+  </footer>
+  </section>
+</template>
