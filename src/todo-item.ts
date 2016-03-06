@@ -1,32 +1,10 @@
 import {Observable} from 'rxjs/Rx'
-import {makeAureliaDriver, ViewSource} from './cycle/index'//from 'aurelia-cycle'
+import {makeAureliaDriver, ViewSource, changable as c} from './cycle/index'//from 'aurelia-cycle'
 
 import {bindable} from 'aurelia-framework'
 
 const ENTER_KEY = 13
 const ESC_KEY = 27
-
-// let i = 0
-
-// function aTest() {
-//   console.log('from aTest')
-//   let out = { 
-//     val: 'some value ' + ++i
-//   }
-  
-//   out.getObserver = function(value) {
-//     return {
-//       subscribe: function(context, obj) {
-//         console.log('from subscription')
-//         obj.call()
-        
-//         console.log('from subscription 2')
-//         obj.call()
-//       }
-//     };
-//   };
-//   return out
-// }
 
 export class TodoItem {
   // cycleDrivers = { TodoItemView: makeAureliaDriver(this) }
@@ -36,6 +14,7 @@ export class TodoItem {
   @bindable completed;
   // @bindable destroyAction;
   @bindable destroy;
+  editing = c(false);
   // something = true;
   
   // bind() {
@@ -45,7 +24,7 @@ export class TodoItem {
   
   cycle({ TodoItemView }:{ TodoItemView: ViewSource }) {
     
-    const completed$ = TodoItemView.values('completed')
+    // const completed$ = TodoItemView.values('completed')
     // const destroy$ = TodoItemView.actions('destroy')
     //                   .map(action => true) //.startWith(false)
     

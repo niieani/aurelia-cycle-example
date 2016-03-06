@@ -1,7 +1,25 @@
 <template>
+  <require from="./binding-test"></require>
   <section>
-    <button click.delegate="cycleAction('increment')">+</button>
-    <button click.delegate="cycleAction('decrement')">-</button>
-    <h2>${cycle(count)}</h2>
+    <!--<header class="header">
+      <h1>todos</h1>
+      <form submit.delegate="cycleAction(action, 'bound source')">
+        <input value.bind="cycleValue(twoWayBinding)" class="new-todo" placeholder="What needs to be done?" autofocus>
+      </form>
+    </header>-->
+    
+    <h2>${cycleValue(count)}</h2>
+    <!--<button click.delegate="cycleAction(increment)">+</button>
+    <button click.delegate="cycleAction(decrement)">-</button>-->
+    <input value.bind="cycleValue(twoWayBinding)" class="new-todo" placeholder="What needs to be done?" autofocus>
+    
+    <binding-test 
+      twowayboundvalue.bind="twoWayBinding"
+      boundincrementaction.bind="cycleAction(increment, 'origin here')"
+      bounddecrementaction.bind="cycleAction(decrement, 'origin here')"
+      ></binding-test>
+      <!--boundincrementaction.bind="increment"
+      bounddecrementaction.bind="decrement"-->
+    <!--what if we want to set base params?-->
   </section>
 </template>

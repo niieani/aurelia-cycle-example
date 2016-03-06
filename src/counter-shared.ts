@@ -9,16 +9,20 @@ export class CounterShared {
       CounterSharedView.actions('increment').map(ev => 1),
       CounterSharedView.actions('decrement').map(ev => -1)
     )
-
+    
     const count$ = action$
       .startWith(0)
       .scan<number>((total, change) => total + change)
 
     const sinks = {
       CounterSharedView: count$.map((count) => ({ 
-        count
+        count,
       }))
     }
+    console.log('running cycle', this)
+    // const sinks = {
+    //   // CounterSharedView: Observable.of({ count: 0 })
+    // }
     
     return sinks
   }

@@ -1,0 +1,9 @@
+<template>
+  <h2>bound:</h2>
+  <input value.bind="cycleValue(twowayboundvalue)">
+  <button click.delegate="cycleAction(boundincrementaction, 'hello from binding!')">+</button>
+  <button click.delegate="cycleAction(bounddecrementaction, 'hello from binding!')">-</button>
+  <!--<form submit.delegate="cycleAction(boundaction, 'bound target')">
+  </form>-->
+  <!--<p>${cycleValueTest(onewayboundvalue)}</p>-->
+</template>
