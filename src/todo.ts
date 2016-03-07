@@ -10,11 +10,22 @@ export class Todos {
   newTodoTitle = c('')
   
   cycle({ TodosView }:{ TodosView: ViewSource }) {
-    const newTodo$ = TodosView.actions('addNewTodo').withLatestFrom(
-      TodosView.values('newTodoTitle').filter(value => value != ''), 
-      (action, title) => ({ action: 'added', todo: i({ title: title, completed: false }) })
-    )//.filter(todoAction => todoAction.todo.title != '')
+    const addNewTodoActions$ = TodosView.actions('addNewTodo')
+      // .do(todoChange => console.log('todo change add trigger', todoChange))
     
+    const newTodoTitleChanges$ = TodosView.values('newTodoTitle')
+      .filter(value => value != '')
+      // .do(todoChange => console.log('todo title add change trigger', todoChange))
+    
+    const newTodo$ = addNewTodoActions$.withLatestFrom(
+      newTodoTitleChanges$, 
+      (action, title) => ({ action: 'added', todo: i({ title: title, completed: false }) })
+    )
+    //.do(todoChange => console.log('todo change add', todoChange))
+    
+    //.filter(todoAction => todoAction.todo.title != '')
+    
+    // reset title after adding
     const newTodoTitle$ = TodosView.values('newTodoTitle')
       // .sample(newTodo$) // only update when 
       .merge(newTodo$.map(todo => ''))
@@ -22,6 +33,7 @@ export class Todos {
     
     const removedTodo$ = TodosView.actions('destroyTodo')
       .map(action => ({ action: 'removed', todo: action.originArguments[0] }))
+      // .do(todoChange => console.log('todo change remove', todoChange))
       // .do((removed) => console.log('removed', removed))
     
     type ITodo = { title: Observable<any>, completed: Observable<any> }
@@ -48,20 +60,22 @@ export class Todos {
         return array
       }, [])
     
+    const currentFilter$ = TodosView.actions('filter')
+      .map(action => action.arguments[0])
+      .startWith('all')
+      .distinctUntilChanged().do(change => console.log('filter change', change))
+    
+    /*
     // I need to be notified on any change of any completed observable
     // and need to know the parent object that complete belongs to
     // so my observable needs to be triggered when any of todo.completed changes
     // merge(todo.completed, todo.completed, ...)
     // and it's value needs to be the todo object
     const todoCompletionChanges$ = todos$.map(todosArray => {
-      const observables = todosArray.map(todo => todo.completed.startWith(false).map(completed => ({ todo, completed })))
+      const observables = todosArray.map(todo => todo.completed.map(completed => ({ todo, completed })))
       return Observable.merge(...observables)
-    }).mergeAll()
-    
-    const currentFilter$ = TodosView.actions('filter')
-      .map(action => action.arguments[0])
-      .startWith('all')
-    
+    }).mergeAll()//.do(completionChange => console.log('completion change', completionChange))
+    //
     const todoVisibilityChanges$ = Observable.combineLatest(todoCompletionChanges$, currentFilter$, 
       (completionChanges, filter) => {
         switch(filter) {
@@ -74,6 +88,8 @@ export class Todos {
         }
       }
     )
+    
+    //.do(visibilityChange => console.log('visibility change', visibilityChange))
     // todos$.
     // const visibleTodos$ = 
     // todoVisibilityChanges$
@@ -100,14 +116,15 @@ export class Todos {
     //       return bindableObject
     //     })
     //   })
-    
+    */
     return {
       TodosView: Observable.combineLatest(
-        visibleTodos$, newTodoTitle$, currentFilter$,
-        (todos, newTodoTitle, currentFilter) => ({
+        todos$, newTodoTitle$, currentFilter$, //todoVisibilityChanges$,
+        (todos, newTodoTitle, currentFilter, visibility) => ({
           todos,
           newTodoTitle,
-          currentFilter
+          currentFilter,
+          // visibility
         })
       )
     }
